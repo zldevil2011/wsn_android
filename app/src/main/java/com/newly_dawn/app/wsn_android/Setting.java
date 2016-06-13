@@ -1,4 +1,4 @@
-package com.newly_dawn.app.wsn_android.user;
+package com.newly_dawn.app.wsn_android;
 
 import android.graphics.Color;
 import android.os.Bundle;
@@ -8,22 +8,21 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
-import com.newly_dawn.app.wsn_android.R;
-
-public class register extends AppCompatActivity {
+public class Setting extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_register);
+        setContentView(R.layout.activity_setting);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("注册");
+        setSupportActionBar(toolbar);
+        toolbar.setTitle("设置");
         toolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                register.this.finish();
+                Setting.this.finish();
             }
         });
     }

@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity
     private ViewPager mViewPager;
     private LayoutInflater mInflater;
     private List<String> mTitleList = new ArrayList<>();//页卡标题集合
-    private View view1, view2, view3;//页卡视图
+    private View index, attention, mine;//页卡视图
     private List<View> mViewList = new ArrayList<>();//页卡视图集合
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,23 +77,19 @@ public class MainActivity extends AppCompatActivity
 
 //        mInflater = LayoutInflater.from(this);
         mInflater = getLayoutInflater();
-        view1 = mInflater.inflate(R.layout.activity_index, null);
-        view2 = mInflater.inflate(R.layout.content_login, null);
-        view3 = mInflater.inflate(R.layout.content_login, null);
-        List<String> data = new ArrayList<String>();
-        data.add("测试数据1");data.add("测试数据2");data.add("测试数据3");data.add("测试数据4");
-        ListView listView = (ListView)view1.findViewById(R.id.index_list);
-        listView.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_expandable_list_item_1, data));
+        index = mInflater.inflate(R.layout.activity_index, null);
+        attention = mInflater.inflate(R.layout.content_login, null);
+        mine = mInflater.inflate(R.layout.content_setting, null);
+
         //添加页卡视图
-        mViewList.add(view1);
-        mViewList.add(view2);
-        mViewList.add(view3);
+        mViewList.add(index);
+        mViewList.add(attention);
+        mViewList.add(mine);
 
         //添加页卡标题
         mTitleList.add("新闻");
         mTitleList.add("关注");
         mTitleList.add("我的");
-
 
         mTabLayout.setTabMode(TabLayout.MODE_FIXED);//设置tab模式，当前为系统默认模式
         mTabLayout.addTab(mTabLayout.newTab().setText(mTitleList.get(0)));//添加tab选项卡
@@ -104,6 +100,9 @@ public class MainActivity extends AppCompatActivity
         mViewPager.setAdapter(mAdapter);//给ViewPager设置适配器
         mTabLayout.setupWithViewPager(mViewPager);//将TabLayout和ViewPager关联起来。
         mTabLayout.setTabsFromPagerAdapter(mAdapter);//给Tabs设置适配器
+        index_build();
+        attention_build();
+        mine_build();
     }
     //ViewPager适配器
     class MyPagerAdapter extends PagerAdapter {
@@ -140,6 +139,21 @@ public class MainActivity extends AppCompatActivity
         public CharSequence getPageTitle(int position) {
             return mTitleList.get(position);//页卡标题
         }
+
+    }
+//    首页构造
+    public void index_build(){
+        List<String> data = new ArrayList<String>();
+        data.add("测试数据1");data.add("测试数据2");data.add("测试数据3");data.add("测试数据4");
+        ListView listView = (ListView)index.findViewById(R.id.index_list);
+        listView.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_expandable_list_item_1, data));
+    }
+//    我的关注
+    public void attention_build(){
+
+    }
+//    我的
+    public void mine_build(){
 
     }
     @Override
@@ -187,7 +201,8 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_machine) {
 
         } else if (id == R.id.nav_setting) {
-
+            Intent setting_intent = new Intent(MainActivity.this, Setting.class);
+            startActivity(setting_intent);
         } else if (id == R.id.nav_share) {
 
         } else if (id == R.id.nav_login) {

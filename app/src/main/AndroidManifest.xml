@@ -26,7 +26,11 @@
             android:name=".user.register"
             android:label="@string/title_activity_register"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".information.index"></activity>
+        <activity android:name=".information.index" />
+        <activity
+            android:name=".Setting"
+            android:label="@string/title_activity_setting"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

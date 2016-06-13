@@ -24,7 +24,8 @@ public class HttpRequest {
     public HttpRequest(String url){
         this.url = url;
     }
-    public void post_connect() throws Exception{
+    public void post_connect(Map<String, String> parameters) throws Exception{
+        this.parameters = parameters;
         URL url = new URL(this.url);
         HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();	//创建一个HTTP连接
         urlConn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
@@ -76,5 +77,11 @@ public class HttpRequest {
         String result_info = String.valueOf(urlConn.getResponseMessage());
         this.responseCode = result_code;
         this.responseText = responseText;
+    }
+    public String getResponseCode(){
+        return this.responseCode;
+    }
+    public String getResponseText(){
+        return this.responseText;
     }
 }

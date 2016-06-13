@@ -22,7 +22,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.support.v4.app.Fragment;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.newly_dawn.app.wsn_android.tool.TabAdapter;
@@ -73,16 +75,19 @@ public class MainActivity extends AppCompatActivity
         mTabLayout  = (TabLayout)findViewById(R.id.tabs);
         mViewPager  = (ViewPager)findViewById(R.id.vp_FindFragment_pager);
 
-        mInflater = LayoutInflater.from(this);
-        view1 = mInflater.inflate(R.layout.content_login, null);
+//        mInflater = LayoutInflater.from(this);
+        mInflater = getLayoutInflater();
+        view1 = mInflater.inflate(R.layout.activity_index, null);
         view2 = mInflater.inflate(R.layout.content_login, null);
         view3 = mInflater.inflate(R.layout.content_login, null);
-
+        List<String> data = new ArrayList<String>();
+        data.add("测试数据1");data.add("测试数据2");data.add("测试数据3");data.add("测试数据4");
+        ListView listView = (ListView)view1.findViewById(R.id.index_list);
+        listView.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_expandable_list_item_1, data));
         //添加页卡视图
         mViewList.add(view1);
         mViewList.add(view2);
         mViewList.add(view3);
-
 
         //添加页卡标题
         mTitleList.add("新闻");
@@ -121,8 +126,8 @@ public class MainActivity extends AppCompatActivity
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
             container.addView(mViewList.get(position));//添加页卡
-            Log.i("xyz", String.valueOf(container));
-            Log.i("xyz", String.valueOf(mViewList.get(position)));
+//            Log.i("xyz", String.valueOf(container));
+//            Log.i("xyz", String.valueOf(mViewList.get(position)));
             return mViewList.get(position);
         }
 

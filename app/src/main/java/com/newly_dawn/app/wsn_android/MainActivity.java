@@ -479,7 +479,10 @@ public class MainActivity extends AppCompatActivity
             Intent login_intent = new Intent(MainActivity.this, Login.class);
             startActivity(login_intent);
         } else if (id == R.id.nav_help){
-
+            Intent browser_intent = new Intent();
+            browser_intent.putExtra("url", "http://www.xiaolong.party/home/");
+            browser_intent.setClass(MainActivity.this, Browser.class);
+            startActivity(browser_intent);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

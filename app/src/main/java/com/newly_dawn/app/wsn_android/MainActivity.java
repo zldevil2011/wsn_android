@@ -312,8 +312,8 @@ public class MainActivity extends AppCompatActivity
         Viewport viewport = new Viewport();
         viewport.top = 60;
         viewport.bottom = 0;
-        viewport.left = 0;
-        viewport.right = 90;
+        viewport.left = 13;
+        viewport.right = 21;
 
         return viewport;
     }
@@ -326,19 +326,19 @@ public class MainActivity extends AppCompatActivity
         List<Line> lineList = new ArrayList<>();
 
         List<PointValue> pointValueList = new ArrayList<>();
-        PointValue pointValue1 = new PointValue(10,30);
+        PointValue pointValue1 = new PointValue(14,30);
         pointValueList.add(pointValue1);
-        PointValue pointValue2 = new PointValue(20,20);
+        PointValue pointValue2 = new PointValue(15,20);
         pointValueList.add(pointValue2);
-        PointValue pointValue3 = new PointValue(30,50);
+        PointValue pointValue3 = new PointValue(16,50);
         pointValueList.add(pointValue3);
-        PointValue pointValue4 = new PointValue(40,44);
+        PointValue pointValue4 = new PointValue(17,44);
         pointValueList.add(pointValue4);
-        PointValue pointValue5 = new PointValue(50,30);
+        PointValue pointValue5 = new PointValue(18,30);
         pointValueList.add(pointValue5);
-        PointValue pointValue6 = new PointValue(60,31);
+        PointValue pointValue6 = new PointValue(19,31);
         pointValueList.add(pointValue6);
-        PointValue pointValue7 = new PointValue(70,22);
+        PointValue pointValue7 = new PointValue(20,22);
         pointValueList.add(pointValue7);
 
 
@@ -367,7 +367,7 @@ public class MainActivity extends AppCompatActivity
         //后加字符
 //        axisX.setFormatter(new SimpleAxisValueFormatter().setAppendedText("aaaa".toCharArray()));
 //        axisX.setFormatter(new SimpleAxisValueFormatter());
-        axisY.setName("销量");
+        axisY.setName("气温(℃)");
         //设置轴
         data.setAxisYLeft(axisY);
         data.setAxisXBottom(axisX);

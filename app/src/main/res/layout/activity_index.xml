@@ -7,7 +7,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin3"
     android:paddingRight="@dimen/activity_horizontal_margin3"
     android:paddingTop="@dimen/activity_vertical_margin3"
-    tools:context="com.newly_dawn.app.wsn_android.information.index">
+    tools:context=".information.Index">
     <ListView
         android:id="@+id/index_list"
         android:layout_width="match_parent"

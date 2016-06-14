@@ -25,13 +25,16 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.support.v4.app.Fragment;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.newly_dawn.app.wsn_android.objects.News;
+import com.newly_dawn.app.wsn_android.tool.Browser;
 import com.newly_dawn.app.wsn_android.tool.HttpRequest;
 import com.newly_dawn.app.wsn_android.tool.TabAdapter;
 import com.newly_dawn.app.wsn_android.user.Login;
@@ -53,6 +56,7 @@ public class MainActivity extends AppCompatActivity
     private View index, attention, mine;//页卡视图
     private List<View> mViewList = new ArrayList<>();//页卡视图集合
     private ProgressDialog dialog;
+    private ListView newsListView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -156,6 +160,7 @@ public class MainActivity extends AppCompatActivity
 //    首页构造
     public void index_build(){
         dialog = new ProgressDialog(MainActivity.this);
+        newsListView = (ListView)index.findViewById(R.id.index_list);
         try {
             SharedPreferences sharedPreferences;
             sharedPreferences = getSharedPreferences("wsnSharedPreferences", MODE_WORLD_READABLE);
@@ -201,12 +206,29 @@ public class MainActivity extends AppCompatActivity
             return newsList;
         }
         protected void onPostExecute(List<News> result){
-            ListView listView = (ListView)index.findViewById(R.id.index_list);
             SimpleAdapter adapter = new SimpleAdapter(MainActivity.this, listItems, R.layout.news_list_item, new String[]{"title",
                     "time", "url"}, new int[]{R.id.title, R.id.time, R.id.url});
-            listView.setAdapter(adapter);
-//            listView.setOnItemClickListener(new NewsItemClickListener());
+            try{
+                newsListView.setAdapter(adapter);
+            }catch (Exception e){
+                Log.i("user_info_bug", String.valueOf(e));
+            }
+            newsListView.setOnItemClickListener(new NewsItemClickListener());
             dialog.dismiss();
+        }
+    }
+    public class NewsItemClickListener implements AdapterView.OnItemClickListener{
+
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            HashMap<String, String> currentItem = (HashMap<String, String>) newsListView.getItemAtPosition(position);
+            String newsUrl = currentItem.get("url");
+            Toast.makeText(MainActivity.this, currentItem.get("url"), Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent();
+//            Intent传递参数
+            intent.putExtra("url", currentItem.get("url"));
+            intent.setClass(MainActivity.this, Browser.class);
+            startActivity(intent);
         }
     }
     /**

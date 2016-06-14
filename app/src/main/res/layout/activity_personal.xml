@@ -12,9 +12,10 @@
         android:background="#4bc7c7"
         android:gravity="center_vertical">
         <Button
+            android:id="@+id/loginBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="登录"
+            android:text="@string/login"
             android:layout_weight="1"
             android:layout_marginLeft="40dp"
             android:layout_marginRight="40dp"
@@ -22,9 +23,10 @@
             android:textSize="16sp"
             />
         <Button
+            android:id="@+id/registerBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="注册"
+            android:text="@string/register"
             android:layout_weight="1"
             android:layout_marginLeft="40dp"
             android:layout_marginRight="40dp"

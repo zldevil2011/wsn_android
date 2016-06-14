@@ -34,6 +34,7 @@ import android.support.v4.app.Fragment;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
@@ -46,6 +47,7 @@ import com.newly_dawn.app.wsn_android.tool.Browser;
 import com.newly_dawn.app.wsn_android.tool.HttpRequest;
 import com.newly_dawn.app.wsn_android.tool.TabAdapter;
 import com.newly_dawn.app.wsn_android.user.Login;
+import com.newly_dawn.app.wsn_android.user.Register;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -58,6 +60,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import lecho.lib.hellocharts.model.Axis;
+import lecho.lib.hellocharts.model.Line;
+import lecho.lib.hellocharts.model.LineChartData;
+import lecho.lib.hellocharts.model.PointValue;
+import lecho.lib.hellocharts.model.ValueShape;
+import lecho.lib.hellocharts.model.Viewport;
+import lecho.lib.hellocharts.view.LineChartView;
+
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private TabLayout mTabLayout;
@@ -68,6 +79,10 @@ public class MainActivity extends AppCompatActivity
     private List<View> mViewList = new ArrayList<>();//页卡视图集合
     private ProgressDialog dialog;
     private ListView newsListView;
+
+    private LineChartView line_chart_view;
+    private LineChartData data;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -105,7 +120,7 @@ public class MainActivity extends AppCompatActivity
 //        mInflater = LayoutInflater.from(this);
         mInflater = getLayoutInflater();
         index = mInflater.inflate(R.layout.activity_index, null);
-        attention = mInflater.inflate(R.layout.content_login, null);
+        attention = mInflater.inflate(R.layout.activity_attention, null);
         mine = mInflater.inflate(R.layout.activity_personal, null);
 
         //添加页卡视图
@@ -280,11 +295,109 @@ public class MainActivity extends AppCompatActivity
     }
 //    我的关注
     public void attention_build(){
+        line_chart_view = (LineChartView)attention.findViewById(R.id.line_chart_view);
+        List<Line> lines = initLine();
+        data = initData(lines);
 
+        line_chart_view.setLineChartData(data);
+
+        Viewport viewport = initViewPort();
+        line_chart_view.setMaximumViewport(viewport);
+        line_chart_view.setCurrentViewport(viewport);
     }
-//    我的
+    /**
+            * 设置4个边距
+    */
+    private Viewport initViewPort() {
+        Viewport viewport = new Viewport();
+        viewport.top = 60;
+        viewport.bottom = 0;
+        viewport.left = 0;
+        viewport.right = 90;
+
+        return viewport;
+    }
+    /**
+     * 初始化线属性
+     *
+     * @return
+     */
+    private List<Line> initLine() {
+        List<Line> lineList = new ArrayList<>();
+
+        List<PointValue> pointValueList = new ArrayList<>();
+        PointValue pointValue1 = new PointValue(10,30);
+        pointValueList.add(pointValue1);
+        PointValue pointValue2 = new PointValue(20,20);
+        pointValueList.add(pointValue2);
+        PointValue pointValue3 = new PointValue(30,50);
+        pointValueList.add(pointValue3);
+        PointValue pointValue4 = new PointValue(40,44);
+        pointValueList.add(pointValue4);
+        PointValue pointValue5 = new PointValue(50,30);
+        pointValueList.add(pointValue5);
+        PointValue pointValue6 = new PointValue(60,31);
+        pointValueList.add(pointValue6);
+        PointValue pointValue7 = new PointValue(70,22);
+        pointValueList.add(pointValue7);
+
+
+        Line line = new Line(pointValueList);
+        line.setColor(getResources().getColor(R.color.colorAccent));
+        line.setShape(ValueShape.CIRCLE);
+        lineList.add(line);
+
+        return lineList;
+    }
+
+    /**
+     * 初始化数据
+     *
+     * @return
+     */
+    private LineChartData initData(List<Line> lines) {
+
+        LineChartData data = new LineChartData(lines);
+        //初始化轴
+        Axis axisX = new Axis();
+        Axis axisY = new Axis().setHasLines(true);
+        axisX.setName("时间");
+        //前加字符
+//        axisX.setFormatter(new SimpleAxisValueFormatter().setPrependedText("aaaa".toCharArray()));
+        //后加字符
+//        axisX.setFormatter(new SimpleAxisValueFormatter().setAppendedText("aaaa".toCharArray()));
+//        axisX.setFormatter(new SimpleAxisValueFormatter());
+        axisY.setName("销量");
+        //设置轴
+        data.setAxisYLeft(axisY);
+        data.setAxisXBottom(axisX);
+        //设置负值 设置为负无穷 默认为0
+//        data.setBaseValue(Float.NEGATIVE_INFINITY);
+
+        return data;
+    }
+    //    我的
     public void mine_build(){
+        Button loginBtn = (Button)mine.findViewById(R.id.loginBtn);
+        Button registerBtn = (Button)mine.findViewById(R.id.registerBtn);
+        loginBtn.setOnClickListener(new loginBtnOnClickListener());
+        registerBtn.setOnClickListener(new registerBtnOnClickListener());
+    }
+    public class loginBtnOnClickListener implements View.OnClickListener{
 
+        @Override
+        public void onClick(View v) {
+            Intent login_intent = new Intent(MainActivity.this, Login.class);
+            startActivity(login_intent);
+        }
+    }
+    public class registerBtnOnClickListener implements View.OnClickListener{
+
+        @Override
+        public void onClick(View v) {
+            Intent register_intent = new Intent(MainActivity.this, Register.class);
+            startActivity(register_intent);
+        }
     }
 
 
@@ -296,8 +409,7 @@ public class MainActivity extends AppCompatActivity
 
 
 
-
-
+//    主界面布局
 
     @Override
     public void onBackPressed() {

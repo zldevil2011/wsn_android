@@ -338,7 +338,17 @@ public class MainActivity extends AppCompatActivity
             Intent setting_intent = new Intent(MainActivity.this, Setting.class);
             startActivity(setting_intent);
         } else if (id == R.id.nav_share) {
-
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            // 分享的数据类型
+            intent.setType("text/plain");
+            // 分享的主题
+            intent.putExtra(Intent.EXTRA_SUBJECT, "好友分享");
+            // 分享的内容
+            intent.putExtra(Intent.EXTRA_TEXT, "我正在使用wsn_android，你也加入吧！！");
+            // 允许启动新的Activity
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            // 目标应用寻找对话框的标题
+            startActivity(Intent.createChooser(intent, getTitle()));
         } else if (id == R.id.nav_login) {
             Intent login_intent = new Intent(MainActivity.this, Login.class);
             startActivity(login_intent);

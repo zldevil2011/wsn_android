@@ -2,6 +2,7 @@ package com.newly_dawn.app.wsn_android;
 
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
@@ -19,7 +20,9 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -541,5 +544,30 @@ public class MainActivity extends AppCompatActivity
             startActivity(intent);
         }
         startActivity(Intent.createChooser(intent, activityTitle));
+    }
+    @Override
+    // 设置回退
+    // 覆盖Activity类的onKeyDown(int keyCoder,KeyEvent event)方法
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("确认退出吗？");
+        builder.setIcon(android.R.drawable.ic_dialog_info);
+        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // 点击“确认”后的操作
+                MainActivity.this.finish();
+            }
+        });
+        builder.setNegativeButton("返回", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // 点击“返回”后的操作,这里不设置没有任何操作
+            }
+        });
+//        builder.setCancelable(false);
+        builder.create().show();
+
+        return super.onKeyDown(keyCode, event);
     }
 }

@@ -1,21 +1,25 @@
 package com.newly_dawn.app.wsn_android.tool;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.newly_dawn.app.wsn_android.R;
+import com.newly_dawn.app.wsn_android.information.Weather;
 
 public class Browser extends AppCompatActivity {
-
+    private WebView father_webView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,7 +40,7 @@ public class Browser extends AppCompatActivity {
         loadUrl(url);
     }
     public void loadUrl(String url){
-        WebView father_webView = (WebView)findViewById(R.id.webBrowser);
+        father_webView = (WebView)findViewById(R.id.webBrowser);
         father_webView.getSettings().setJavaScriptEnabled(true);
         Log.i("AAAAA", "12345");
 //        WebView加载web资源
@@ -55,5 +59,19 @@ public class Browser extends AppCompatActivity {
                 return true;
             }
         });
+    }
+    @Override
+    // 设置回退
+    // 覆盖Activity类的onKeyDown(int keyCoder,KeyEvent event)方法
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        try{
+            if ((keyCode == KeyEvent.KEYCODE_BACK) && father_webView.canGoBack()) {
+                father_webView.goBack(); // goBack()表示返回WebView的上一页面
+                return true;
+            }
+        }catch (Exception e){
+
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }

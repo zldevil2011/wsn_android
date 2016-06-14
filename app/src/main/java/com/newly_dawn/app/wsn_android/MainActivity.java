@@ -1,11 +1,18 @@
 package com.newly_dawn.app.wsn_android;
 
 import android.app.ProgressDialog;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
@@ -43,6 +50,9 @@ import com.newly_dawn.app.wsn_android.user.Login;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -338,17 +348,21 @@ public class MainActivity extends AppCompatActivity
             Intent setting_intent = new Intent(MainActivity.this, Setting.class);
             startActivity(setting_intent);
         } else if (id == R.id.nav_share) {
-            Intent intent = new Intent(Intent.ACTION_SEND);
-            // 分享的数据类型
-            intent.setType("text/plain");
-            // 分享的主题
-            intent.putExtra(Intent.EXTRA_SUBJECT, "好友分享");
-            // 分享的内容
-            intent.putExtra(Intent.EXTRA_TEXT, "我正在使用wsn_android，你也加入吧！！");
-            // 允许启动新的Activity
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            // 目标应用寻找对话框的标题
-            startActivity(Intent.createChooser(intent, getTitle()));
+            savePic();
+
+            String strDlgTitle = "分享";
+            String strSubject = "WSN_android";
+            String strContent = "我正在使用WSN_Android，你也加入吧！！";
+//            1.分享纯文字内容
+            shareMsg(strDlgTitle, strSubject, strContent, null);
+
+//            2.分享图片和文字内容
+            strDlgTitle = "对话框标题 - 分享图片";
+            String imgPath=Environment.getExternalStorageDirectory() + "/pictures/blue_sky.jpg";
+            Log.i("share_path", imgPath);
+            Uri imageUri = Uri.fromFile(new File(imgPath));
+//            shareMsg(strDlgTitle, strSubject, strContent, imgPath);
+            
         } else if (id == R.id.nav_login) {
             Intent login_intent = new Intent(MainActivity.this, Login.class);
             startActivity(login_intent);
@@ -359,5 +373,58 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+//    将图片存入本地SD卡
+    public void savePic(){
+        String fileName = "blue_sky";
+        Drawable d = getResources().getDrawable(R.drawable.blue_sky);
+        BitmapDrawable bd = (BitmapDrawable) d;
+        Bitmap bitmap = bd.getBitmap();
+        File file = new File("/sdcard/pictures/" + fileName + ".jpg");//创建文件对象
+        try {
+            file.createNewFile();                                //创建一个新文件
+            FileOutputStream fileOS = new FileOutputStream(file);    //创建一个文件输出流对象
+            String p = file.getAbsolutePath();
+            Log.i("share_path_p", p);
+            //将图片内容压缩为JPEG格式输出到输出流对象中
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fileOS);
+            fileOS.flush();                                    //将缓冲区中的数据全部写出到输出流中
+            fileOS.close();                                     //关闭文件输出流对象
+            Log.i("share_path", "success");
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.i("share_path", String.valueOf(e));
+        }
+    }
+
+    /**
+     * @param activityTitle
+     * @param msgTitle
+     * @param msgText
+     * @param imgPath
+     */
+    public void shareMsg(String activityTitle, String msgTitle, String msgText,
+                         String imgPath) {
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        if (imgPath == null || imgPath.equals("")) {
+            intent.setType("text/plain"); // 纯文本
+        } else {
+            File f = new File(imgPath);
+            if (f != null && f.exists() && f.isFile()) {
+                intent.setType("image/jpg");
+                Uri u = Uri.fromFile(f);
+                intent.putExtra(Intent.EXTRA_STREAM, u);
+            }
+        }
+        intent.putExtra(Intent.EXTRA_SUBJECT, msgTitle);
+        intent.putExtra(Intent.EXTRA_TEXT, msgText);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        // 设置弹出框标题
+        if (activityTitle != null && !"".equals(activityTitle)) { // 自定义标题
+            startActivity(Intent.createChooser(intent, activityTitle));
+        } else { // 系统默认标题
+            startActivity(intent);
+        }
+        startActivity(Intent.createChooser(intent, activityTitle));
     }
 }

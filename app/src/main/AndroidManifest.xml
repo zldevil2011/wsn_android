@@ -45,6 +45,14 @@
         <activity
             android:name=".tool.Browser"
             android:label="@string/title_activity_browser"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".info.Weather"
+            android:label="@string/title_activity_weather"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".information.Weather"
+            android:label="@string/title_activity_weather"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

@@ -33,6 +33,7 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.newly_dawn.app.wsn_android.information.Weather;
 import com.newly_dawn.app.wsn_android.objects.News;
 import com.newly_dawn.app.wsn_android.tool.Browser;
 import com.newly_dawn.app.wsn_android.tool.HttpRequest;
@@ -329,7 +330,8 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_home) {
             // Handle the camera action
         } else if (id == R.id.nav_weather) {
-
+            Intent weather_intent = new Intent(MainActivity.this, Weather.class);
+            startActivity(weather_intent);
         } else if (id == R.id.nav_machine) {
 
         } else if (id == R.id.nav_setting) {

@@ -1,7 +1,10 @@
 package com.newly_dawn.app.wsn_android;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -25,13 +28,21 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.ListView;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
+import com.newly_dawn.app.wsn_android.objects.News;
+import com.newly_dawn.app.wsn_android.tool.HttpRequest;
 import com.newly_dawn.app.wsn_android.tool.TabAdapter;
 import com.newly_dawn.app.wsn_android.user.Login;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -41,6 +52,7 @@ public class MainActivity extends AppCompatActivity
     private List<String> mTitleList = new ArrayList<>();//页卡标题集合
     private View index, attention, mine;//页卡视图
     private List<View> mViewList = new ArrayList<>();//页卡视图集合
+    private ProgressDialog dialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -143,10 +155,95 @@ public class MainActivity extends AppCompatActivity
     }
 //    首页构造
     public void index_build(){
-        List<String> data = new ArrayList<String>();
-        data.add("测试数据1");data.add("测试数据2");data.add("测试数据3");data.add("测试数据4");
-        ListView listView = (ListView)index.findViewById(R.id.index_list);
-        listView.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_expandable_list_item_1, data));
+        dialog = new ProgressDialog(MainActivity.this);
+        try {
+            SharedPreferences sharedPreferences;
+            sharedPreferences = getSharedPreferences("wsnSharedPreferences", MODE_WORLD_READABLE);
+            String token = sharedPreferences.getString("token", null);
+            Log.i("user_info", token);
+        }catch (Exception e){
+            Log.i("user_info", "no token");
+        }
+        String http = "http://c.m.163.com/nc/article/headline/T1348647853363/0-20.html";
+        dialog.setTitle("提示信息");
+        dialog.setMessage("loading......");
+        dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        dialog.setCancelable(false);
+        new NewsAsyncTask().execute(http);
+    }
+    public class NewsAsyncTask extends AsyncTask<String, Void, List<News>> {
+        List<Map<String,String>> listItems = new ArrayList<>();
+        @Override
+        protected void onPreExecute(){
+            dialog.show();
+        }
+        @Override
+        protected List<News> doInBackground(String... params) {
+            List<News> newsList = new ArrayList<News>();
+            String result = "";
+            try {
+                HttpRequest httpRequest = new HttpRequest(params[0]);
+                httpRequest.get_connect();
+                result = httpRequest.getResponseText();
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.i("MY_TEST_B", String.valueOf(e));
+            }
+            newsList = parseNewsInfo(result);
+            for(int i = 0; i < newsList.size(); ++i){
+                News tmp = newsList.get(i);
+                Map<String, String> map = new HashMap<>();
+                map.put("title", tmp.getTitle());
+                map.put("time",tmp.getPtime());
+                map.put("url",tmp.getUrl());
+                listItems.add(map);
+            }
+            return newsList;
+        }
+        protected void onPostExecute(List<News> result){
+            ListView listView = (ListView)index.findViewById(R.id.index_list);
+            SimpleAdapter adapter = new SimpleAdapter(MainActivity.this, listItems, R.layout.news_list_item, new String[]{"title",
+                    "time", "url"}, new int[]{R.id.title, R.id.time, R.id.url});
+            listView.setAdapter(adapter);
+//            listView.setOnItemClickListener(new NewsItemClickListener());
+            dialog.dismiss();
+        }
+    }
+    /**
+     * read from html and get the JSON data
+     * @param newsString
+     * @return
+     */
+    public static List<News> parseNewsInfo(String newsString)
+    {
+        List<News> newsList = new ArrayList<News>();
+        try
+        {
+            JSONObject jsonObject = new JSONObject(newsString);
+            JSONArray data = jsonObject.getJSONArray("T1348647853363");
+            for(int i = 1; i < data.length(); i++){
+                News tmp_news = new News();
+                JSONObject tmp = data.getJSONObject(i);
+                tmp_news.setTitle(tmp.getString("title"));
+                try {
+                    tmp_news.setUrl(tmp.getString("url_3w"));
+                }catch (Exception e){
+                    tmp_news.setUrl("");
+                }
+                tmp_news.setSource("");
+                tmp_news.setLmodify("");
+                tmp_news.setImgSrc("");
+                tmp_news.setSubtitle("");
+                tmp_news.setPtime(tmp.getString("ptime"));
+                newsList.add(tmp_news);
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
+        return newsList;
     }
 //    我的关注
     public void attention_build(){
@@ -156,6 +253,19 @@ public class MainActivity extends AppCompatActivity
     public void mine_build(){
 
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

@@ -106,7 +106,7 @@ public class MainActivity extends AppCompatActivity
         mInflater = getLayoutInflater();
         index = mInflater.inflate(R.layout.activity_index, null);
         attention = mInflater.inflate(R.layout.content_login, null);
-        mine = mInflater.inflate(R.layout.content_setting, null);
+        mine = mInflater.inflate(R.layout.activity_personal, null);
 
         //添加页卡视图
         mViewList.add(index);
@@ -362,7 +362,7 @@ public class MainActivity extends AppCompatActivity
             Log.i("share_path", imgPath);
             Uri imageUri = Uri.fromFile(new File(imgPath));
 //            shareMsg(strDlgTitle, strSubject, strContent, imgPath);
-            
+
         } else if (id == R.id.nav_login) {
             Intent login_intent = new Intent(MainActivity.this, Login.class);
             startActivity(login_intent);

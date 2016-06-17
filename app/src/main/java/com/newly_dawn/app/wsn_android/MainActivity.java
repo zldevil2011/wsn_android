@@ -53,6 +53,7 @@ import com.newly_dawn.app.wsn_android.user.Login;
 import com.newly_dawn.app.wsn_android.user.Register;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -299,6 +300,22 @@ public class MainActivity extends AppCompatActivity
 //    我的关注
     public void attention_build(){
         line_chart_view = (LineChartView)attention.findViewById(R.id.line_chart_view);
+        try {
+            SharedPreferences sharedPreferences;
+            sharedPreferences = getSharedPreferences("wsnSharedPreferences", MODE_WORLD_READABLE);
+            String token = sharedPreferences.getString("token", null);
+            Log.i("user_info", token);
+            String targetUrl = getResources().getString(R.string.ServerIP) + "/api/air_info/";
+            String location = "北京";
+            Map<String, String> mp = new HashMap<>();
+            mp.put("url", targetUrl);
+            mp.put("location", location);
+            mp.put("token", token);
+            new airAsyncTask().execute(mp);
+        }catch (Exception e){
+            Log.i("user_info", "no token");
+            Toast.makeText(MainActivity.this, "请先登录", Toast.LENGTH_SHORT).show();
+        }
         List<Line> lines = initLine();
         data = initData(lines);
 
@@ -378,6 +395,56 @@ public class MainActivity extends AppCompatActivity
 //        data.setBaseValue(Float.NEGATIVE_INFINITY);
 
         return data;
+    }
+    public class airAsyncTask extends AsyncTask<Map<String,String>, Void, Map<String, String>> {
+        Map<String, String> result = new HashMap<>();
+        @Override
+        protected void onPreExecute(){
+            dialog.show();
+        }
+        @Override
+        protected Map<String, String> doInBackground(Map<String,String>... params) {
+            String url = params[0].get("url") + "?access_token=" + params[0].get("token");
+            HttpRequest httpRequest = new HttpRequest(url);
+            Map<String, String> data = new HashMap<>();
+            data.put("location", params[0].get("location"));
+            try {
+                httpRequest.post_connect(data);
+                Log.i("wsn_Exception", "xxxxxxxxxxxxxxxx");
+                String responseCode = httpRequest.getResponseCode();
+                Log.i("wsn_Exception", responseCode);
+                String responseText = httpRequest.getResponseText();
+                Log.i("wsn_Exception", responseText);
+                result.put("code", responseCode);
+                result.put("text", responseText);
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.i("wsn_Exception", String.valueOf(e));
+                result = null;
+            }
+            return result;
+        }
+        protected void onPostExecute(Map<String,String> result){
+            dialog.dismiss();
+            if(result == null){
+                Toast.makeText(MainActivity.this, "请检查数据连接", Toast.LENGTH_SHORT).show();
+            }else{
+                if(result.get("code").equals("200")){
+                    Toast.makeText(MainActivity.this, "获取数据成功", Toast.LENGTH_SHORT).show();
+                    String valText = result.get("text");
+                    try {
+                        JSONObject jsonObject = new JSONObject(valText);
+                        Log.i("wsn", String.valueOf(jsonObject));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        Log.i("wsn_Exception", String.valueOf(e));
+                    }
+
+                }else{
+                    Toast.makeText(MainActivity.this, "认证失败", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
     }
     //    我的
     public void mine_build(){

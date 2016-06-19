@@ -324,24 +324,24 @@ public class MainActivity extends AppCompatActivity
             Log.i("user_info", "no token");
             Toast.makeText(MainActivity.this, "请先登录", Toast.LENGTH_SHORT).show();
         }
-        List<Line> lines = initLine();
-        data = initData(lines);
-
-        line_chart_view.setLineChartData(data);
-
-        Viewport viewport = initViewPort();
-        line_chart_view.setMaximumViewport(viewport);
-        line_chart_view.setCurrentViewport(viewport);
+//        List<Line> lines = initLine();
+//        data = initData(lines);
+//
+//        line_chart_view.setLineChartData(data);
+//
+//        Viewport viewport = initViewPort();
+//        line_chart_view.setMaximumViewport(viewport);
+//        line_chart_view.setCurrentViewport(viewport);
     }
     /**
             * 设置4个边距
     */
     private Viewport initViewPort() {
         Viewport viewport = new Viewport();
-        viewport.top = 60;
-        viewport.bottom = 0;
-        viewport.left = 13;
-        viewport.right = 21;
+        viewport.top = 40;
+        viewport.bottom = 20;
+        viewport.left = 0;
+        viewport.right = 7;
 
         return viewport;
     }
@@ -350,24 +350,28 @@ public class MainActivity extends AppCompatActivity
      *
      * @return
      */
-    private List<Line> initLine() {
+    private List<Line> initLine(Map<Integer, Float> data) {
         List<Line> lineList = new ArrayList<>();
-
         List<PointValue> pointValueList = new ArrayList<>();
-        PointValue pointValue1 = new PointValue(14,30);
-        pointValueList.add(pointValue1);
-        PointValue pointValue2 = new PointValue(15,20);
-        pointValueList.add(pointValue2);
-        PointValue pointValue3 = new PointValue(16,50);
-        pointValueList.add(pointValue3);
-        PointValue pointValue4 = new PointValue(17,44);
-        pointValueList.add(pointValue4);
-        PointValue pointValue5 = new PointValue(18,30);
-        pointValueList.add(pointValue5);
-        PointValue pointValue6 = new PointValue(19,31);
-        pointValueList.add(pointValue6);
-        PointValue pointValue7 = new PointValue(20,22);
-        pointValueList.add(pointValue7);
+        for(Integer key : data.keySet()){
+            Float val = data.get(key);
+            PointValue pointValue1 = new PointValue(key,val);
+            pointValueList.add(pointValue1);
+        }
+//        PointValue pointValue1 = new PointValue(14,30);
+//        pointValueList.add(pointValue1);
+//        PointValue pointValue2 = new PointValue(15,20);
+//        pointValueList.add(pointValue2);
+//        PointValue pointValue3 = new PointValue(16,50);
+//        pointValueList.add(pointValue3);
+//        PointValue pointValue4 = new PointValue(17,44);
+//        pointValueList.add(pointValue4);
+//        PointValue pointValue5 = new PointValue(18,30);
+//        pointValueList.add(pointValue5);
+//        PointValue pointValue6 = new PointValue(19,31);
+//        pointValueList.add(pointValue6);
+//        PointValue pointValue7 = new PointValue(20,22);
+//        pointValueList.add(pointValue7);
 
 
         Line line = new Line(pointValueList);
@@ -455,7 +459,7 @@ public class MainActivity extends AppCompatActivity
                         TextView weatherType = (TextView)attention.findViewById(R.id.weatherType);
                         location.setText(jsonObject.getString("location"));
                         air_WeaTem.setText(jsonObject.getString("weather") + " " + jsonObject.getString("temperature") + "℃");
-                        aqi.setText("AQI:" + jsonObject.getString("aqi"));
+                        aqi.setText("PM2.5:" + jsonObject.getString("aqi"));
                         humidity.setText("湿度:" + jsonObject.getString("humidity") + "%");
                         cloud_speed.setText(jsonObject.getString("cloud"));
                         weatherType.setText(jsonObject.getString("weather"));
@@ -511,12 +515,30 @@ public class MainActivity extends AppCompatActivity
                     Toast.makeText(MainActivity.this, "获取数据成功", Toast.LENGTH_SHORT).show();
                     String valText = result.get("text");
                     try {
-                        JSONObject jsonObject = new JSONObject(valText).getJSONObject("air");
-                        Log.i("wsn_Exception_forecast", String.valueOf(jsonObject));
+                        Log.i("LENT", "xxx");
+                        JSONArray jsonArray = new JSONObject(valText).getJSONArray("air");
+                        Log.i("LENT", valText);
+                        Log.i("LENT", "yyy");
+                        int arrarLen = jsonArray.length();
+                        Log.i("LENT", String.valueOf(arrarLen));
+                        Map<Integer, Float> forecastData = new HashMap<>();
+                        for(int i = 0; i < arrarLen; ++i){
+                            JSONObject jsonTmp = jsonArray.getJSONObject(i);
+                            Long tmp = jsonTmp.getLong("high_temperature");
+                            forecastData.put(i, Float.valueOf(tmp));
+                        }
+                        Log.i("LEN", String.valueOf(forecastData));
+                        List<Line> lines = initLine(forecastData);
+                        data = initData(lines);
 
+                        line_chart_view.setLineChartData(data);
+
+                        Viewport viewport = initViewPort();
+                        line_chart_view.setMaximumViewport(viewport);
+                        line_chart_view.setCurrentViewport(viewport);
                     } catch (JSONException e) {
                         e.printStackTrace();
-                        Log.i("wsn_Exception", String.valueOf(e));
+                        Log.i("wsn_Exception--", String.valueOf(e));
                     }
 
                 }else{

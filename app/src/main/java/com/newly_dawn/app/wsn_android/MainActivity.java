@@ -308,12 +308,18 @@ public class MainActivity extends AppCompatActivity
             String token = sharedPreferences.getString("token", null);
             Log.i("user_info", token);
             String targetUrl = getResources().getString(R.string.ServerIP) + "/api/air_info/";
+            String targetUrl2 = getResources().getString(R.string.ServerIP) + "/api/forecast_info/";
             String location = "北京";
             Map<String, String> mp = new HashMap<>();
             mp.put("url", targetUrl);
             mp.put("location", location);
             mp.put("token", token);
+            Map<String, String> mp2 = new HashMap<>();
+            mp2.put("url", targetUrl2);
+            mp2.put("location", location);
+            mp2.put("token", token);
             new airAsyncTask().execute(mp);
+            new forecastAsyncTask().execute(mp2);
         }catch (Exception e){
             Log.i("user_info", "no token");
             Toast.makeText(MainActivity.this, "请先登录", Toast.LENGTH_SHORT).show();
@@ -441,8 +447,6 @@ public class MainActivity extends AppCompatActivity
                     try {
                         JSONObject jsonObject = new JSONObject(valText).getJSONObject("air");
                         Log.i("wsn", String.valueOf(jsonObject));
-//                        Log.i("wsn_air", jsonObject.getString("air"));
-//                        Log.i("wsn_air", jsonObject.getJSONObject("air").getString("temperature"));
                         TextView location = (TextView)attention.findViewById(R.id.air_location);
                         TextView air_WeaTem = (TextView)attention.findViewById(R.id.air_WeaTem);
                         TextView aqi = (TextView)attention.findViewById(R.id.aqi);
@@ -455,6 +459,61 @@ public class MainActivity extends AppCompatActivity
                         humidity.setText("湿度:" + jsonObject.getString("humidity") + "%");
                         cloud_speed.setText(jsonObject.getString("cloud"));
                         weatherType.setText(jsonObject.getString("weather"));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        Log.i("wsn_Exception", String.valueOf(e));
+                    }
+
+                }else{
+                    Toast.makeText(MainActivity.this, "认证失败", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+    }
+    public class forecastAsyncTask extends AsyncTask<Map<String,String>, Void, Map<String, String>> {
+        Map<String, String> result = new HashMap<>();
+        @Override
+        protected void onPreExecute(){
+            dialog.show();
+        }
+        @Override
+        protected Map<String, String> doInBackground(Map<String,String>... params) {
+            String url = null;
+            try {
+                url = params[0].get("url") + "?location=" + URLEncoder.encode("北京", "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+            HttpRequest httpRequest = new HttpRequest(url);
+            Map<String, String> data = new HashMap<>();
+            data.put("location", params[0].get("location"));
+            try {
+                httpRequest.get_connect();
+                String responseCode = httpRequest.getResponseCode();
+                Log.i("wsn_Exception_forecast", responseCode);
+                String responseText = httpRequest.getResponseText();
+                Log.i("wsn_Exception_forecast", responseText);
+                result.put("code", responseCode);
+                result.put("text", responseText);
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.i("wsn_Exception_forecast", String.valueOf(e));
+                result = null;
+            }
+            return result;
+        }
+        protected void onPostExecute(Map<String,String> result){
+            dialog.dismiss();
+            if(result == null){
+                Toast.makeText(MainActivity.this, "请检查数据连接", Toast.LENGTH_SHORT).show();
+            }else{
+                if(result.get("code").equals("200")){
+                    Toast.makeText(MainActivity.this, "获取数据成功", Toast.LENGTH_SHORT).show();
+                    String valText = result.get("text");
+                    try {
+                        JSONObject jsonObject = new JSONObject(valText).getJSONObject("air");
+                        Log.i("wsn_Exception_forecast", String.valueOf(jsonObject));
+
                     } catch (JSONException e) {
                         e.printStackTrace();
                         Log.i("wsn_Exception", String.valueOf(e));

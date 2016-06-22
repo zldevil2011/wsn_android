@@ -1,5 +1,6 @@
 package com.newly_dawn.app.wsn_android.user;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -15,10 +16,12 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.newly_dawn.app.wsn_android.MainActivity;
 import com.newly_dawn.app.wsn_android.R;
 import com.newly_dawn.app.wsn_android.objects.News;
 import com.newly_dawn.app.wsn_android.tool.HttpRequest;
@@ -143,9 +146,16 @@ public class Login extends AppCompatActivity {
                         editor = sharedPreferences.edit();
                         editor.putString("token", token);
                         editor.apply();
-                    } catch (JSONException e) {
+                        Intent intent = new Intent();
+                        intent.putExtra("result", "ok");// 把返回数据存入Intent
+                        intent.putExtra("token", token);;//添加要返回给页面1的数据
+                        intent.putExtra("username", "devil");//添加要返回给页面1的数据
+                        intent.putExtra("email", "xx@xx.com");//添加要返回给页面1的数据
+                        Login.this.setResult(Activity.RESULT_OK, intent);//返回页面1
+                        Login.this.finish();
+                    } catch (Exception e) {
                         e.printStackTrace();
-                        Log.i("wsn_Exception", String.valueOf(e));
+                        Log.i("wsn_Exception_ll", String.valueOf(e));
                     }
 
                 }else{

@@ -1,5 +1,6 @@
 package com.newly_dawn.app.wsn_android;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.DialogInterface;
@@ -117,6 +118,25 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         initTabFragment();
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        try {
+            if (requestCode == 0 && resultCode == Activity.RESULT_OK) {
+                Bundle bundle = data.getExtras();
+                TextView nav_head_username = (TextView)findViewById(R.id.nav_head_username);
+                TextView nav_head_email = (TextView)findViewById(R.id.nav_head_email);
+                String username = bundle.getString("username");
+                String email = bundle.getString("email");
+                nav_head_username.setText(username);
+                nav_head_email.setText(email);
+                Toast.makeText(this, "回传成功", Toast.LENGTH_SHORT).show();
+            }
+        }catch (Exception e){
+            Log.i("wsn_debug_main_login", String.valueOf(e));
+        }
+
     }
     public void initTabFragment(){
 
@@ -648,7 +668,8 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_login) {
             Intent login_intent = new Intent(MainActivity.this, Login.class);
-            startActivity(login_intent);
+//            startActivity(login_intent);
+            startActivityForResult(login_intent, 0);
         } else if (id == R.id.nav_help){
             Intent browser_intent = new Intent();
             browser_intent.putExtra("url", "http://www.xiaolong.party/home/");

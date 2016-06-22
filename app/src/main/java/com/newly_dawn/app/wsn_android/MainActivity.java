@@ -127,16 +127,49 @@ public class MainActivity extends AppCompatActivity
                 Bundle bundle = data.getExtras();
                 TextView nav_head_username = (TextView)findViewById(R.id.nav_head_username);
                 TextView nav_head_email = (TextView)findViewById(R.id.nav_head_email);
-                String username = bundle.getString("username");
-                String email = bundle.getString("email");
-                nav_head_username.setText(username);
-                nav_head_email.setText(email);
+                String token = bundle.getString("token");
+                String targetUrl = "http://www.xiaolong.party/api/user_info/?access_token=" + token;
+                Map<String, String> dataMp = new HashMap<>();
+                dataMp.put("url", targetUrl);
+                new UserinfoAsyncTask().execute(dataMp);
                 Toast.makeText(this, "回传成功", Toast.LENGTH_SHORT).show();
             }
         }catch (Exception e){
             Log.i("wsn_debug_main_login", String.valueOf(e));
         }
-
+    }
+    public class UserinfoAsyncTask extends AsyncTask<Map<String,String>, Void, Map<String, String>> {
+        Map<String, String> result = new HashMap<>();
+        @Override
+        protected void onPreExecute(){        }
+        @Override
+        protected Map<String, String> doInBackground(Map<String,String>... params) {
+            String url = params[0].get("url");
+            HttpRequest httpRequest = new HttpRequest(url);
+            try {
+                httpRequest.get_connect();
+                String responseCode = httpRequest.getResponseCode();
+                String responseText = httpRequest.getResponseText();
+                result.put("code", responseCode);
+                result.put("text", responseText);
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.i("wsn_Exception_user_info", String.valueOf(e));
+                result = null;
+            }
+            return result;
+        }
+        protected void onPostExecute(Map<String,String> result){
+            if(result == null){
+                Toast.makeText(MainActivity.this, "获取用户信息失败", Toast.LENGTH_SHORT).show();
+            }else{
+                if(result.get("code").equals("200")){
+                    Log.i("user_info_text", result.get("text"));
+                }else{
+                    Log.i("user_info_code", result.get("code"));
+                }
+            }
+        }
     }
     public void initTabFragment(){
 

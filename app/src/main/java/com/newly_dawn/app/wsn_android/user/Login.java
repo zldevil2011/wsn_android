@@ -147,10 +147,7 @@ public class Login extends AppCompatActivity {
                         editor.putString("token", token);
                         editor.apply();
                         Intent intent = new Intent();
-                        intent.putExtra("result", "ok");// 把返回数据存入Intent
-                        intent.putExtra("token", token);;//添加要返回给页面1的数据
-                        intent.putExtra("username", "devil");//添加要返回给页面1的数据
-                        intent.putExtra("email", "xx@xx.com");//添加要返回给页面1的数据
+                        intent.putExtra("token", token); //把返回数据存入Intent
                         Login.this.setResult(Activity.RESULT_OK, intent);//返回页面1
                         Login.this.finish();
                     } catch (Exception e) {

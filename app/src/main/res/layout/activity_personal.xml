@@ -15,7 +15,7 @@
             android:id="@+id/personal_info_linearlayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="gone"
+            android:visibility="visible"
             android:orientation="vertical">
             <ImageView
                 android:id="@+id/personal_photo"
@@ -23,8 +23,8 @@
                 android:layout_height="80dp"
                 android:layout_gravity="center"
                 android:maxHeight="80dp"
-                android:src="@drawable/default_user"
-                />
+                android:src="@drawable/default_user">
+            </ImageView>
             <TextView
                 android:id="@+id/personal_username"
                 android:layout_width="wrap_content"
@@ -68,6 +68,7 @@
         android:layout_marginTop="@dimen/mine_classification_margin">
 
         <TextView
+            android:id="@+id/myAttention"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:drawableLeft="@drawable/heart_24"
@@ -89,6 +90,7 @@
         android:background="#eeeff1"
         android:layout_marginTop="@dimen/mine_item_margin">
         <TextView
+            android:id="@+id/myMessage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:drawableLeft="@drawable/information_24"
@@ -110,6 +112,7 @@
         android:background="#eeeff1"
         android:layout_marginTop="@dimen/mine_item_margin">
         <TextView
+            android:id="@+id/myInformation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:drawableLeft="@drawable/personal_24"
@@ -132,6 +135,7 @@
         android:layout_marginTop="@dimen/mine_classification_margin">
 
         <TextView
+            android:id="@+id/feedback"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:drawableLeft="@drawable/feedback_24"
@@ -154,6 +158,7 @@
         android:layout_marginTop="@dimen/mine_item_margin">
 
         <TextView
+            android:id="@+id/contactUs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:drawableLeft="@drawable/email_24"

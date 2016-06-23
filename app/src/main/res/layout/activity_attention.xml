@@ -123,7 +123,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="50dp">
+            android:layout_marginBottom="50dp"
+            android:layout_gravity="bottom">
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -131,7 +132,7 @@
                 android:drawableLeft="@drawable/arrow_left_24"
                 android:padding="10dp"
                 android:gravity="center_horizontal|center_vertical"
-                android:background="@android:color/white"
+                android:background="#50668f"
                 android:text="前一个"
                 />
             <TextView
@@ -141,7 +142,7 @@
                 android:drawableRight="@drawable/arrow_right_24"
                 android:padding="10dp"
                 android:gravity="center_horizontal|center_vertical"
-                android:background="@android:color/white"
+                android:background="#50668f"
                 android:text="后一个"
                 />
         </LinearLayout>

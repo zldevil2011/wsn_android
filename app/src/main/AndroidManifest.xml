@@ -52,7 +52,27 @@
             android:label="@string/title_activity_weather"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".user.Personal" />
-        <activity android:name=".user.Attention"></activity>
+        <activity android:name=".user.Attention" />
+        <activity
+            android:name=".user.MyAttention"
+            android:label="@string/title_activity_my_attention"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".user.MyMessage"
+            android:label="@string/title_activity_my_message"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".user.MyInformation"
+            android:label="@string/title_activity_my_information"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".user.Feedback"
+            android:label="@string/title_activity_feedback"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".user.ContactUs"
+            android:label="@string/title_activity_contact_us"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

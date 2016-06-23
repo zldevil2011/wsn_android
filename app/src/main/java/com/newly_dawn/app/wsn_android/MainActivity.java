@@ -51,9 +51,15 @@ import android.widget.Toast;
 import com.newly_dawn.app.wsn_android.information.Weather;
 import com.newly_dawn.app.wsn_android.objects.News;
 import com.newly_dawn.app.wsn_android.tool.Browser;
+import com.newly_dawn.app.wsn_android.tool.CircularImage;
 import com.newly_dawn.app.wsn_android.tool.HttpRequest;
 import com.newly_dawn.app.wsn_android.tool.TabAdapter;
+import com.newly_dawn.app.wsn_android.user.ContactUs;
+import com.newly_dawn.app.wsn_android.user.Feedback;
 import com.newly_dawn.app.wsn_android.user.Login;
+import com.newly_dawn.app.wsn_android.user.MyAttention;
+import com.newly_dawn.app.wsn_android.user.MyInformation;
+import com.newly_dawn.app.wsn_android.user.MyMessage;
 import com.newly_dawn.app.wsn_android.user.Register;
 
 import org.json.JSONArray;
@@ -224,8 +230,10 @@ public class MainActivity extends AppCompatActivity
         protected void onPostExecute(Bitmap bitmap){
             ImageView portrait = (ImageView)findViewById(R.id.nav_head_photo);
             ImageView personal_photo = (ImageView)mine.findViewById(R.id.personal_photo);
-            portrait.setImageBitmap(bitmap);
+//            Bitmap bm=BitmapFactory.decodeResource(getResources(), R.drawable.heart_24);
             personal_photo.setImageBitmap(bitmap);
+            portrait.setImageBitmap(bitmap);
+//            personal_photo.setImageDrawable(getResources().getDrawable(R.drawable.heart_24));
             LinearLayout original = (LinearLayout)mine.findViewById(R.id.personal_info_loginRegister);
             LinearLayout currentInfo = (LinearLayout)mine.findViewById(R.id.personal_info_linearlayout);
             original.setVisibility(View.GONE);
@@ -667,6 +675,22 @@ public class MainActivity extends AppCompatActivity
         Button registerBtn = (Button)mine.findViewById(R.id.registerBtn);
         loginBtn.setOnClickListener(new loginBtnOnClickListener());
         registerBtn.setOnClickListener(new registerBtnOnClickListener());
+
+        TextView myAttention = (TextView)mine.findViewById(R.id.myAttention);
+        myAttention.setOnClickListener(new myAttentionOnClickListener());
+
+        TextView myMessage = (TextView)mine.findViewById(R.id.myMessage);
+        myMessage.setOnClickListener(new myMessageOnClickListener());
+
+        TextView myInformation = (TextView)mine.findViewById(R.id.myInformation);
+        myInformation.setOnClickListener(new myInformationOnClickListener());
+
+        TextView feedback = (TextView)mine.findViewById(R.id.feedback);
+        feedback.setOnClickListener(new feedbackOnClickListener());
+
+        TextView contactUs = (TextView)mine.findViewById(R.id.contactUs);
+        contactUs.setOnClickListener(new contactUsOnClickListener());
+
     }
     public class loginBtnOnClickListener implements View.OnClickListener{
 
@@ -682,6 +706,46 @@ public class MainActivity extends AppCompatActivity
         public void onClick(View v) {
             Intent register_intent = new Intent(MainActivity.this, Register.class);
             startActivity(register_intent);
+        }
+    }
+    public class myAttentionOnClickListener implements View.OnClickListener{
+
+        @Override
+        public void onClick(View v) {
+            Intent myAttention_intent = new Intent(MainActivity.this, MyAttention.class);
+            startActivity(myAttention_intent);
+        }
+    }
+    public class myMessageOnClickListener implements View.OnClickListener{
+
+        @Override
+        public void onClick(View v) {
+            Intent myMessage_intent = new Intent(MainActivity.this, MyMessage.class);
+            startActivity(myMessage_intent);
+        }
+    }
+    public class myInformationOnClickListener implements View.OnClickListener{
+
+        @Override
+        public void onClick(View v) {
+            Intent myInformation_intent = new Intent(MainActivity.this, MyInformation.class);
+            startActivity(myInformation_intent);
+        }
+    }
+    public class feedbackOnClickListener implements View.OnClickListener{
+
+        @Override
+        public void onClick(View v) {
+            Intent feedback_intent = new Intent(MainActivity.this, Feedback.class);
+            startActivity(feedback_intent);
+        }
+    }
+    public class contactUsOnClickListener implements View.OnClickListener{
+
+        @Override
+        public void onClick(View v) {
+            Intent contactUs_intent = new Intent(MainActivity.this, ContactUs.class);
+            startActivity(contactUs_intent);
         }
     }
 

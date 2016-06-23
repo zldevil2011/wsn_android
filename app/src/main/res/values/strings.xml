@@ -13,4 +13,9 @@
     <string name="login">登录</string>
     <string name="register">注册</string>
     <string name="ServerIP">http://www.xiaolong.party</string>
+    <string name="title_activity_my_attention">MyAttention</string>
+    <string name="title_activity_my_message">MyMessage</string>
+    <string name="title_activity_my_information">MyInformation</string>
+    <string name="title_activity_feedback">Feedback</string>
+    <string name="title_activity_contact_us">ContactUs</string>
 </resources>

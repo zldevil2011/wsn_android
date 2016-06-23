@@ -132,7 +132,7 @@
                 android:padding="10dp"
                 android:gravity="center_horizontal|center_vertical"
                 android:background="@android:color/white"
-                android:text="前一天"
+                android:text="前一个"
                 />
             <TextView
                 android:layout_width="match_parent"
@@ -142,7 +142,7 @@
                 android:padding="10dp"
                 android:gravity="center_horizontal|center_vertical"
                 android:background="@android:color/white"
-                android:text="后一天"
+                android:text="后一个"
                 />
         </LinearLayout>
     </LinearLayout>

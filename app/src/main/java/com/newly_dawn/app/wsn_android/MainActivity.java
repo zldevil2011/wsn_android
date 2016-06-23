@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -40,6 +41,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
@@ -60,7 +63,11 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -125,8 +132,6 @@ public class MainActivity extends AppCompatActivity
         try {
             if (requestCode == 0 && resultCode == Activity.RESULT_OK) {
                 Bundle bundle = data.getExtras();
-                TextView nav_head_username = (TextView)findViewById(R.id.nav_head_username);
-                TextView nav_head_email = (TextView)findViewById(R.id.nav_head_email);
                 String token = bundle.getString("token");
                 String targetUrl = "http://www.xiaolong.party/api/user_info/?access_token=" + token;
                 Map<String, String> dataMp = new HashMap<>();
@@ -164,11 +169,67 @@ public class MainActivity extends AppCompatActivity
                 Toast.makeText(MainActivity.this, "获取用户信息失败", Toast.LENGTH_SHORT).show();
             }else{
                 if(result.get("code").equals("200")){
+                    try {
+                        JSONObject jsonObject = new JSONObject(result.get("text"));
+                        TextView nav_head_username = (TextView)findViewById(R.id.nav_head_username);
+                        TextView nav_head_email = (TextView)findViewById(R.id.nav_head_email);
+                        JSONObject user = jsonObject.getJSONObject("user");
+                        nav_head_username.setText(user.getString("nickname"));
+                        nav_head_email.setText(user.getString("email"));
+                        TextView personal_username = (TextView)mine.findViewById(R.id.personal_username);
+                        personal_username.setText(user.getString("nickname"));
+                        updatePhoto(user.getString("portrait"));
+
+                    } catch (JSONException e) {
+                        Log.i("getImg", String.valueOf(e));
+                        e.printStackTrace();
+                    }
                     Log.i("user_info_text", result.get("text"));
                 }else{
                     Log.i("user_info_code", result.get("code"));
                 }
             }
+        }
+    }
+    public void updatePhoto(String path){
+        path = "http://www.xiaolong.party" + path;
+        new GetPhotoAsyncTask().execute(path);
+    }
+    public class GetPhotoAsyncTask extends AsyncTask<String, Void, Bitmap> {
+        @Override
+        protected void onPreExecute(){}
+        @Override
+        protected Bitmap doInBackground(String ... params) {
+            URL myFileUrl = null;
+            Bitmap bitmap = null;
+            try {
+                myFileUrl = new URL(params[0]);
+            } catch (Exception e) {
+                Log.i("exception_xxxxUP1", String.valueOf(e));
+                e.printStackTrace();
+            }
+            try {
+                HttpURLConnection conn = (HttpURLConnection) myFileUrl.openConnection();
+                conn.setDoInput(true);
+                conn.connect();
+                InputStream is = conn.getInputStream();
+                bitmap = BitmapFactory.decodeStream(is);
+                is.close();
+            } catch (Exception e) {
+                Log.i("exception_xxxxUP2", String.valueOf(e));
+                e.printStackTrace();
+            }
+            return bitmap;
+        }
+        protected void onPostExecute(Bitmap bitmap){
+            ImageView portrait = (ImageView)findViewById(R.id.nav_head_photo);
+            ImageView personal_photo = (ImageView)mine.findViewById(R.id.personal_photo);
+            portrait.setImageBitmap(bitmap);
+            personal_photo.setImageBitmap(bitmap);
+            LinearLayout original = (LinearLayout)mine.findViewById(R.id.personal_info_loginRegister);
+            LinearLayout currentInfo = (LinearLayout)mine.findViewById(R.id.personal_info_linearlayout);
+            original.setVisibility(View.GONE);
+            currentInfo.setVisibility(View.VISIBLE);
         }
     }
     public void initTabFragment(){

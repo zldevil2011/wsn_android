@@ -320,6 +320,11 @@ public class MainActivity extends AppCompatActivity
             sharedPreferences = getSharedPreferences("wsnSharedPreferences", MODE_WORLD_READABLE);
             String token = sharedPreferences.getString("token", null);
             Log.i("user_info", token);
+            String targetUrl = "http://www.xiaolong.party/api/user_info/?access_token=" + token;
+            Map<String, String> dataMp = new HashMap<>();
+            dataMp.put("url", targetUrl);
+            new UserinfoAsyncTask().execute(dataMp);
+
         }catch (Exception e){
             Log.i("user_info", "no token");
         }
